@@ -1,4 +1,23 @@
-export default function Dashboard() {
+type Coin = {
+  id: string
+  symbol: string
+  name: string
+  current_price: number
+  price_change_percentage_24h: number
+}
+
+async function getCoins(): Promise<Coin[]> {
+  const res = await fetch(
+    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=false",
+    { next: { revalidate: 60 } } // تحديث كل دقيقة
+  )
+
+  return res.json()
+}
+
+export default async function Dashboard() {
+  const coins = await getCoins()
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white">
 
@@ -8,68 +27,62 @@ export default function Dashboard() {
           Smart Liquidity Dashboard
         </h1>
         <span className="text-sm text-zinc-400">
-          Live Crypto Intelligence
+          Live Crypto Data
         </span>
       </header>
 
       {/* Stats */}
       <section className="grid grid-cols-1 md:grid-cols-4 gap-6 px-8 py-8">
-        {[
-          ["BTC Dominance", "52.4%"],
-          ["Market Cap", "$1.78T"],
-          ["24h Volume", "$86B"],
-          ["Smart Wallets", "12,483"],
-        ].map(([title, value]) => (
-          <div
-            key={title}
-            className="rounded-2xl bg-white/5 border border-white/10 p-6"
-          >
-            <p className="text-sm text-zinc-400">{title}</p>
-            <h3 className="text-3xl font-bold mt-2 text-emerald-400">
-              {value}
-            </h3>
-          </div>
-        ))}
+        <Stat title="Tracked Assets" value={coins.length.toString()} />
+        <Stat title="Market" value="Crypto" />
+        <Stat title="Data Source" value="CoinGecko" />
+        <Stat title="Refresh" value="60s" />
       </section>
 
       {/* Chart + Table */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-8 pb-16">
 
-        {/* TradingView Chart */}
+        {/* Chart */}
         <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-white/10 bg-black">
           <iframe
-            src="https://s.tradingview.com/embed-widget/advanced-chart/?symbol=BINANCE:BTCUSDT&theme=dark&style=1&locale=en&autosize=true"
+            src="https://s.tradingview.com/embed-widget/advanced-chart/?symbol=BINANCE:BTCUSDT&theme=dark&autosize=true"
             className="w-full h-[420px]"
             allowFullScreen
           />
         </div>
 
-        {/* Top Coins */}
+        {/* Live Coins */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-lg font-semibold mb-4 text-emerald-400">
-            Top Assets
+            Live Market
           </h2>
 
           <table className="w-full text-sm">
             <thead className="text-zinc-400 border-b border-white/10">
               <tr>
-                <th className="text-left py-2">Asset</th>
+                <th className="text-left py-2">Coin</th>
                 <th className="text-right">Price</th>
                 <th className="text-right">24h</th>
               </tr>
             </thead>
             <tbody>
-              {[
-                ["BTC", "$43,250", "+2.4%"],
-                ["ETH", "$2,320", "+1.8%"],
-                ["SOL", "$98.12", "+5.1%"],
-                ["SUI", "$1.42", "+3.9%"],
-                ["ZRO", "$3.87", "+4.6%"],
-              ].map(([coin, price, change]) => (
-                <tr key={coin} className="border-b border-white/5">
-                  <td className="py-3 font-medium">{coin}</td>
-                  <td className="text-right">{price}</td>
-                  <td className="text-right text-emerald-400">{change}</td>
+              {coins.map((coin) => (
+                <tr key={coin.id} className="border-b border-white/5">
+                  <td className="py-3 font-medium uppercase">
+                    {coin.symbol}
+                  </td>
+                  <td className="text-right">
+                    ${coin.current_price.toLocaleString()}
+                  </td>
+                  <td
+                    className={`text-right font-semibold ${
+                      coin.price_change_percentage_24h >= 0
+                        ? "text-emerald-400"
+                        : "text-red-400"
+                    }`}
+                  >
+                    {coin.price_change_percentage_24h.toFixed(2)}%
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -78,12 +91,20 @@ export default function Dashboard() {
 
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-white/10 py-6 text-center text-zinc-500 text-sm">
-        © {new Date().getFullYear()} Smart Liquidity • Investor Grade Analytics
+        © {new Date().getFullYear()} Smart Liquidity • Live Market Data
       </footer>
-
     </main>
-  );
+  )
 }
 
+function Stat({ title, value }: { title: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-white/5 border border-white/10 p-6">
+      <p className="text-sm text-zinc-400">{title}</p>
+      <h3 className="text-3xl font-bold mt-2 text-emerald-400">
+        {value}
+      </h3>
+    </div>
+  )
+}
