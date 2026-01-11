@@ -1,11 +1,12 @@
-import WhaleSignalCard from "@/app/components/WhaleSignalCard"
-import { demoSignals } from "@/app/data/demoSignals"
+import { demoSignals } from "@/data/demoSignals"
+import WhaleSignalCard from "@/components/WhaleSignalCard"
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <h1 className="text-3xl font-bold mb-2">
         Smart Liquidity Radar
       </h1>
+
       <p className="text-zinc-400 mb-8">
         Tracking whale accumulation & smart money behavior
       </p>
