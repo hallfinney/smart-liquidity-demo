@@ -1,43 +1,27 @@
-import PriceChart from "@/components/PriceChart"
-
-export const dynamic = "force-dynamic"
-
-async function getChartData(id: string) {
-  const res = await fetch(
-    `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`,
-    { cache: "no-store" }
-  )
-  return res.json()
-}
-
-export default async function Dashboard() {
-  const btc = await getChartData("bitcoin")
-  const eth = await getChartData("ethereum")
-
-  const btcPrices = btc.prices.map((p: number[]) => p[1])
-  const ethPrices = eth.prices.map((p: number[]) => p[1])
-
-  const labels = btc.prices.map((p: number[]) =>
-    new Date(p[0]).toLocaleDateString()
-  )
-
+import WhaleSignalCard from "@/app/components/WhaleSignalCard"
+import { demoSignals } from "@/app/data/demoSignals"
+export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold mb-8">
-        Smart Liquidity Radar – Charts
+      <h1 className="text-3xl font-bold mb-2">
+        Smart Liquidity Radar
       </h1>
+      <p className="text-zinc-400 mb-8">
+        Tracking whale accumulation & smart money behavior
+      </p>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <PriceChart
-          prices={btcPrices}
-          labels={labels}
-          symbol="BTC"
-        />
-        <PriceChart
-          prices={ethPrices}
-          labels={labels}
-          symbol="ETH"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {demoSignals.map((coin) => (
+          <WhaleSignalCard
+            key={coin.symbol}
+            symbol={coin.symbol}
+            name={coin.name}
+            signal={coin.signal}
+            liquidityScore={coin.liquidityScore}
+            confidence={coin.confidence}
+            timeframe={coin.timeframe}
+          />
+        ))}
       </div>
     </main>
   )
