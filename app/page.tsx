@@ -1,5 +1,6 @@
-import { demoSignals } from "@/data/demoSignals"
-import WhaleSignalCard from "@/components/WhaleSignalCard"
+import WhaleSignalCard from "@/app/components/WhaleSignalCard"
+import { demoSignals } from "@/app/data/demoSignals"
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white p-8">
@@ -17,9 +18,10 @@ export default function Home() {
             key={coin.symbol}
             symbol={coin.symbol}
             name={coin.name}
-            signal={coin.signal}
-            liquidityScore={coin.liquidityScore}
-            confidence={coin.confidence}
+            accumulation={coin.accumulation}
+            liquidity={coin.liquidity}
+            exchangeFlow={coin.exchangeFlow}
+            priceBehavior={coin.priceBehavior}
             timeframe={coin.timeframe}
           />
         ))}
