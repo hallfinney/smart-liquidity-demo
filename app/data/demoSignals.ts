@@ -1,35 +1,42 @@
-export type DemoSignal = {
-  symbol: string
-  name: string
-  signal: string
-  liquidityScore: number
-  confidence: number
-  timeframe: string
-}
-
-export const demoSignals: DemoSignal[] = [
+export const demoSignals = [
   {
     symbol: "BTC",
     name: "Bitcoin",
-    signal: "Strong Accumulation",
-    liquidityScore: 92,
-    confidence: 88,
-    timeframe: "7D",
+    signal: "Whale Accumulation",
+    liquidityScore: 87,
+    confidence: "High",
+    timeframe: "Last 24h",
+  },
+  {
+    symbol: "ETH",
+    name: "Ethereum",
+    signal: "Smart Money Inflow",
+    liquidityScore: 72,
+    confidence: "Medium",
+    timeframe: "Last 48h",
   },
   {
     symbol: "SOL",
     name: "Solana",
-    signal: "Accumulation",
-    liquidityScore: 81,
-    confidence: 74,
-    timeframe: "7D",
+    signal: "Liquidity Rotation",
+    liquidityScore: 84,
+    confidence: "High",
+    timeframe: "Last 24h",
   },
   {
     symbol: "ZRO",
     name: "LayerZero",
-    signal: "Early Accumulation",
-    liquidityScore: 77,
-    confidence: 69,
-    timeframe: "14D",
+    signal: "Stealth Accumulation",
+    liquidityScore: 90,
+    confidence: "High",
+    timeframe: "Last 12h",
+  },
+  {
+    symbol: "VRT",
+    name: "Vortex",
+    signal: "Speculative Smart Entry",
+    liquidityScore: 68,
+    confidence: "Medium",
+    timeframe: "Last 72h",
   },
 ]
