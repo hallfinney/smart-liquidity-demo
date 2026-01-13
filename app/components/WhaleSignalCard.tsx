@@ -1,79 +1,52 @@
-import { detectMarketPhase } from "@/app/lib/marketPhase"
+import Link from "next/link"
 
-type Props = {
+interface Props {
   symbol: string
   name: string
-  accumulation: number
-  liquidity: number
-  exchangeFlow: number
-  priceBehavior: number
+  signal: string
+  liquidityScore: number
+  confidence: string
   timeframe: string
-}
-
-function calculateWhaleScore(
-  accumulation: number,
-  liquidity: number,
-  exchangeFlow: number,
-  priceBehavior: number
-) {
-  return Math.round(
-    accumulation * 0.35 +
-      liquidity * 0.25 +
-      exchangeFlow * 0.25 +
-      priceBehavior * 0.15
-  )
 }
 
 export default function WhaleSignalCard({
   symbol,
   name,
-  accumulation,
-  liquidity,
-  exchangeFlow,
-  priceBehavior,
+  signal,
+  liquidityScore,
+  confidence,
   timeframe,
 }: Props) {
-  const whaleScore = calculateWhaleScore(
-    accumulation,
-    liquidity,
-    exchangeFlow,
-    priceBehavior
-  )
-
-  const market = detectMarketPhase(
-    accumulation,
-    exchangeFlow,
-    priceBehavior
-  )
-
   return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-900 to-black p-6">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-xl font-bold">{symbol}</h3>
-          <p className="text-sm text-zinc-400">{name}</p>
+    <Link href={`/coin/${symbol.toLowerCase()}`}>
+      <div className="cursor-pointer bg-zinc-900 rounded-xl p-6 border border-zinc-800 hover:border-indigo-500 transition">
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <h3 className="text-xl font-bold">{symbol}</h3>
+            <p className="text-zinc-400 text-sm">{name}</p>
+          </div>
+
+          <span className="text-xs px-3 py-1 rounded-full bg-zinc-800">
+            {confidence}
+          </span>
         </div>
-        <span className="text-2xl font-bold text-emerald-400">
-          {whaleScore}
-        </span>
+
+        <p className="text-indigo-400 font-medium mb-4">{signal}</p>
+
+        <div className="mb-2">
+          <p className="text-sm text-zinc-400 mb-1">Liquidity Score</p>
+          <div className="w-full h-2 bg-zinc-800 rounded">
+            <div
+              className="h-2 bg-indigo-500 rounded"
+              style={{ width: `${liquidityScore}%` }}
+            />
+          </div>
+        </div>
+
+        <p className="text-xs text-zinc-500 mt-3">
+          Timeframe: {timeframe}
+        </p>
       </div>
-
-      <p className="mt-1 text-xs text-zinc-400">Whale Score</p>
-
-      <p className={`mt-2 text-sm font-semibold ${market.color}`}>
-        {market.phase}
-      </p>
-
-      <div className="mt-4 space-y-1 text-xs text-zinc-300">
-        <div>Accumulation: {accumulation}</div>
-        <div>Liquidity: {liquidity}</div>
-        <div>Exchange Flow: {exchangeFlow}</div>
-        <div>Price Behavior: {priceBehavior}</div>
-      </div>
-
-      <p className="mt-4 text-xs text-zinc-500">
-        Timeframe: {timeframe}
-      </p>
-    </div>
+    </Link>
   )
 }
